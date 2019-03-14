@@ -1,0 +1,142 @@
+---
+title: "Workout01-sylvia-li"
+author: "Sylvia"
+date: "3/12/2019"
+output: github_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## R Markdown
+
+This is an R Markdown document. Markdown is a simple formatting syntax for authoring HTML, PDF, and MS Word documents. For more details on using R Markdown see <http://rmarkdown.rstudio.com>.
+
+When you click the **Knit** button a document will be generated that includes both content as well as the output of any embedded R code chunks within the document. You can embed an R code chunk like this:
+
+```{r cars}
+summary(cars)
+```
+
+## Including Plots
+
+You can also embed plots, for example:
+
+```{r pressure, echo=FALSE}
+plot(pressure)
+```
+
+Note that the `echo = FALSE` parameter was added to the code chunk to prevent printing of the R code that generated the plot.
+
+
+```{r}
+
+library(dplyr)
+
+shots = read.csv('../data/shots-data.csv', stringsAsFactors = FALSE)
+two_pts = summarise(group_by(shots, name), total = length(which(shot_type == "2PT Field Goal")), made = length(which(shot_type == "2PT Field Goal"&shot_made_flag == "shot_yes")), perc_made = (made/total))
+two_pts = arrange(two_pts, desc(perc_made))
+two_pts
+
+three_pts = summarise(group_by(shots, name), total = length(which(shot_type == "3PT Field Goal")), made = length(which(shot_type == "3PT Field Goal"&shot_made_flag == "shot_yes")), perc_made = (made/total))
+three_pts = arrange(three_pts, desc(perc_made))
+three_pts
+
+effective_pts = summarise(group_by(shots, name), total = length(which(shot_type == "3PT Field Goal" |shot_type == "2PT Field Goal" )), made = length(which((shot_type == "3PT Field Goal" | shot_type == "2PT Field Goal")&shot_made_flag == "shot_yes")), perc_made = (made/total))
+effective_pts = arrange(effective_pts, desc(perc_made))
+effective_pts
+
+```
+
+###introduction
+The real NBA Star? Iguodala, Durant, Curry, Thompson and Green, in The Golden State Warriors, who is the best?
+The Golden State Warriors are an American professional basketball team based in Oakland, California. The Warriors compete in the National Basketball Association(NBA), as a member of the league's Western Conference Pacific Division. It’s generally believed that the time period from 2009 to present is The Stephen Curry era. But is it really true? This report through the complete process of data extraction, data cleaning, and data visualization to provide some insights and hints to think about this question. 
+
+###motivation
+When people are asked about questions like “who’s the best singer” or “which ice cream flavor is the best”, their answers are always different and could be subjective, as different people have their own standards to value the exactly same thing. This scenario also applies when considering the best basketball player. But data is always objective and factual, which can provide an unbiased and unarguable perspective in the discussion. This data driven project analyzes data to better understand the performance of the five warriors: Andre Iguodala, Kevin Durant, Stephen Curry, Klay Thompson, and Draymond Green, including the accuracy of their shots, they type of shots they always take and the position where they often shoot. Thus, we can get some ideas about whether Stephen Curry is the best player from data perspective.  
+
+###background
+I collected datasets containing the scoring information of all the five players. The datasets are clearly labeled and very easy to understand for the audiences or readers. 
+
+###data 
+Each column in csv file contains same information in sequence for its corresponding players. The period column means that an NBA game is divided in 4 periods of 12 mins each. For example, a value for period = 1 refers to the first period (the first 12 mins of the game). The minutes_remaining and the seconds_remaining columns have to do with the amount of time in minutes and seconds, respectively, that remained to be played in a given period. The shot_made_flag column indicates whether a shot was made (y) or missed (n). The action_type column has to do with the basketball moves used by players, either to pass by defenders to gain access to the basket, or to get a clean pass to a teammate to score a two pointer or three pointer. The shot_type column indicates whether a shot is a 2-point field goal, or a 3-point field goal. The shot_distance column distance to the basket (measured in feet). The team_name column refers to the name of the NBA team, which is the Golden State Warrior. The game_date column refers to the date that the game took place. The season column is the NBA season during which the game took place, which is 2016. The Opponent column is the team that they are playing against. The x, y columns works together to provide us with the coordinates of each shot. In general, these files give us well-rounded information on each shot one player made in 2016 season. 
+
+
+###analysis 
+The first step is the so-called data preparation. The primary goal of this stage is to create a csv data file shots-data.csv that will contain the required variables to be used in the data visualization step. To achieve that goal, I added a new column called "name" to each imported data frame, storing the ordered name of the player in it. I also added another column called “minute” to document the exactly minute of the shot after some calculation. Then I output the summary of these files into my output folder. Then I combined those five csv files into one big csv file using rbind, and stored this new file along with other csv files in the data folder and outputted that. 
+
+The second step is the data visualization to help us understand the position where every basketball player shoots. By using the x, y column is the csv file and the ggplot function, I create a shot chart for each player. I also used a picture of basketball court as the background of shot charts for people to better understand the relative positions and the real situation. After I gained a chart for each player, I merged all these charts into one single graph. I put those graphs below. 
+
+From those graphs, we can tell that Angre Iguoda generally shoots less often than other four players and he mainly shoots the shot at the outer circle. The graph doesn't show explicitly the position reflects whether he shoots inside the basket or not, as the red and blue colors mingle together. Draymond Green shoots his shot either at the outer circle or very near the basket but not in between. When he is very close to the basket, it is very likely he could shoot in the basketball sucessfully. Kevin Durant and Klay Thompson don't prefer specific positions and they shoot at the outer circle, the inner area, and also places in between. It's very interesting that Stephen Curry sometimes shoots at the other side and he barely shoots into the basket successfully. 
+
+
+
+```{r out.width='80%', echo=FALSE, fig.align='center'}
+knitr::include_graphics('../images/andre-iguodala-shot-chart.pdf')
+```
+
+```{r out.width='80%', echo=FALSE, fig.align='center'}
+knitr::include_graphics('../images/draymond-green-shot-chart.pdf')
+```
+
+```{r out.width='80%', echo=FALSE, fig.align='center'}
+knitr::include_graphics('../images/kevin-durant-shot-chart.pdf')
+```
+
+```{r out.width='80%', echo=FALSE, fig.align='center'}
+knitr::include_graphics('../images/klay-thompson-shot-chart.pdf')
+```
+
+```{r out.width='80%', echo=FALSE, fig.align='center'}
+knitr::include_graphics('../images/stephen-curry-shot-chart.pdf')
+```
+
+```{r out.width='80%', echo=FALSE, fig.align='center'}
+knitr::include_graphics('../images/gsw-shot-charts.pdf')
+```
+
+
+
+###discussion
+As we wanna furthur understand the data and the players' performances. I used the data shots-data.csv to create three tables to summarize Effective Shooting percentages by player, as below:
+
+
+
+####2 PT Effective Shooting % by Player
+```{r}
+shots = read.csv('../data/shots-data.csv', stringsAsFactors = FALSE)
+two_pts = summarise(group_by(shots, name), total = length(which(shot_type == "2PT Field Goal")), made = length(which(shot_type == "2PT Field Goal"&shot_made_flag == "shot_yes")), perc_made = (made/total))
+two_pts = arrange(two_pts, desc(perc_made))
+two_pts
+```
+
+####3 PT Effective Shooting % by Player
+```{r}
+three_pts = summarise(group_by(shots, name), total = length(which(shot_type == "3PT Field Goal")), made = length(which(shot_type == "3PT Field Goal"&shot_made_flag == "shot_yes")), perc_made = (made/total))
+three_pts = arrange(three_pts, desc(perc_made))
+three_pts
+```
+
+
+####Effective Shooting % by Player
+```{r}
+effective_pts = summarise(group_by(shots, name), total = length(which(shot_type == "3PT Field Goal" |shot_type == "2PT Field Goal" )), made = length(which((shot_type == "3PT Field Goal" | shot_type == "2PT Field Goal")&shot_made_flag == "shot_yes")), perc_made = (made/total))
+effective_pts = arrange(effective_pts, desc(perc_made))
+effective_pts
+```
+
+We can tell from the three tables that for 2 points effective shooting, Andre Iguodala has the highest percentage to successfully make that; for 3 points effective shooting, Klay Thompson has the highest percentage to successfully make that; and overall, for either 2 or 3 points effective shooting, Kevin Durant has the highest percentage to successfully make that. So among none of them, Stephen Curry has the highest percentange. Even though it seems that Stephen Curry shoots the most amount of 2 points and 3 points, his effective shooting percentage is the second lowest, which draws a question towards the assumption that Stephen Curry is the best player in the Golden State Warrior team. 
+
+
+###conclusions
+Stephen Curry is the one who shoots his shot at the other side most often and he almost failed every time. In general, he is the second lowest player among the five ones to have the effective shooting percentage. From all the analysis, we should not be so confident to say that the time from 2009 to present is Stephen Curry era. 
+
+
+###refrences 
+Wikipedia: https://en.wikipedia.org/wiki/Golden_State_Warriors
+
+
+
+
+
