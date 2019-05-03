@@ -6,7 +6,7 @@ Private Repository for HW assignments of Stat 133 (Spring 2019)
 - Github username: UpwithSylvia
 - Email: sylviamoment@berkeley.edu
 - Lab section: 110
-- GSI: NA
+- GSI: Shuni Li
 
 -----
 
